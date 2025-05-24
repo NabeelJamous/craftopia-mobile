@@ -1,6 +1,6 @@
-import axios from "axios";
+import axios from 'axios';
 
-const BASE_URL = "http://192.168.1.14:3000";
+const BASE_URL = 'http://192.168.1.14:3000';
 
 export const login = async (email, password) => {
   try {
@@ -11,7 +11,7 @@ export const login = async (email, password) => {
 
     return response.data;
   } catch (error) {
-    console.error("Login failed:", error.message);
+    console.error('Login failed:', error.message);
     return null;
   }
 };
@@ -23,7 +23,7 @@ export const register = async (
   location,
   role,
   craft,
-  avatarUrl
+  avatarUrl,
 ) => {
   try {
     const response = await axios.post(`${BASE_URL}/auth/register`, {
@@ -36,9 +36,10 @@ export const register = async (
       avatarUrl,
     });
 
-    return response.data;
+    // ✅ Only return the user object
+    return response.data.user;
   } catch (error) {
-    console.error("Registration failed:", error.message);
+    console.error('Registration failed:', error.message);
     return null;
   }
 };

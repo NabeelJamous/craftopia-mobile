@@ -19,10 +19,13 @@ import OptionPickerModal from '../components/modals/OptionPickerModal';
 import { Crafts, CraftIcons } from '../constants/crafts';
 import { Roles, RoleIcons } from '../constants/roles';
 import { register } from '../api/authService';
+import { useUser } from '../context/UserContext';
 
 const { width, height } = Dimensions.get('window');
 
 const SignUpScreen = ({ navigation }) => {
+  const { setAndStoreUser } = useUser();
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -105,23 +108,41 @@ const SignUpScreen = ({ navigation }) => {
       coordinates: [coords.longitude, coords.latitude],
     };
 
-    const response = await register(
+    const userData = {
       name,
       email,
       password,
       location,
       role,
-      selectedCraft,
-      ""
+      craft: role === Roles.CRAFTER ? selectedCraft : '',
+      avatarUrl: '',
+    };
+
+    console.log('📦 Sending to register:', userData);
+
+    const newUser = await register(
+      userData.name,
+      userData.email,
+      userData.password,
+      userData.location,
+      userData.role,
+      userData.craft,
+      userData.avatarUrl
     );
 
-    if (response) {
+    if (newUser) {
       Toast.show({
         type: 'success',
         text1: 'Registration Successful',
-        text2: 'You can now log in.',
+        text2: 'Redirecting...',
       });
-      navigation.navigate('Login');
+
+      if (role === Roles.CUSTOMER) {
+        await setAndStoreUser(newUser); // ✅ Store the new user in context
+        navigation.replace('SetPreferences');
+      } else {
+        navigation.replace('Login');
+      }
     } else {
       Toast.show({
         type: 'error',

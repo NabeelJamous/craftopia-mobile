@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Text,
   StyleSheet,
@@ -14,15 +14,18 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Toast from 'react-native-toast-message';
 import AnimatedInputField from '../components/form/AnimatedInputField';
-import {login} from '../api/authService';
+import { login } from '../api/authService';
+import { useUser } from '../context/UserContext'; // ✅ context import
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
-const LoginScreen = ({navigation}) => {
+const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+
+  const { loginUser } = useUser(); // ✅ access context login method
 
   const formTranslateY = useRef(new Animated.Value(50)).current;
   const formOpacity = useRef(new Animated.Value(0)).current;
@@ -54,17 +57,26 @@ const LoginScreen = ({navigation}) => {
       return;
     }
 
-    const response = await login(email, password);
+    try {
+      const response = await login(email, password);
+      console.log('🔐 Login API response:', response);
 
-    if (response) {
-      Toast.show({
-        type: 'success',
-        text1: 'Login Successful',
-        text2: 'Welcome back!',
-      });
+      if (response?.user) {
+        await loginUser(response.user); // ✅ save only the user object
+        console.log('✅ User saved to context:', response.user);
 
-      navigation.navigate('Home');
-    } else {
+        Toast.show({
+          type: 'success',
+          text1: 'Login Successful',
+          text2: `Welcome, ${response.user.name || 'user'}!`,
+        });
+
+        navigation.replace('Home');
+      } else {
+        throw new Error('Invalid credentials or missing user data');
+      }
+    } catch (err) {
+      console.error('❌ Login Error:', err.message);
       Toast.show({
         type: 'error',
         text1: 'Login Failed',
@@ -80,8 +92,9 @@ const LoginScreen = ({navigation}) => {
       <Animated.View
         style={[
           styles.form,
-          {transform: [{translateY: formTranslateY}], opacity: formOpacity},
-        ]}>
+          { transform: [{ translateY: formTranslateY }], opacity: formOpacity },
+        ]}
+      >
         <Text style={styles.title}>Sign in</Text>
         <View style={styles.underline} />
 
@@ -113,7 +126,8 @@ const LoginScreen = ({navigation}) => {
         <View style={styles.row}>
           <TouchableOpacity
             style={styles.rememberMe}
-            onPress={() => setRememberMe(!rememberMe)}>
+            onPress={() => setRememberMe(!rememberMe)}
+          >
             <Ionicons
               name={rememberMe ? 'checkbox' : 'square-outline'}
               size={18}
@@ -145,9 +159,9 @@ const LoginScreen = ({navigation}) => {
 export default LoginScreen;
 
 const styles = StyleSheet.create({
-  container: {flex: 1, backgroundColor: '#fff'},
-  wave: {width, height: 700, resizeMode: 'cover'},
-  form: {paddingHorizontal: 30, marginTop: -280},
+  container: { flex: 1, backgroundColor: '#fff' },
+  wave: { width, height: 700, resizeMode: 'cover' },
+  form: { paddingHorizontal: 30, marginTop: -280 },
   title: {
     fontSize: 50,
     fontWeight: 'bold',
@@ -161,21 +175,21 @@ const styles = StyleSheet.create({
     marginBottom: 60,
     borderRadius: 2,
   },
-  iconRight: {marginLeft: 10},
+  iconRight: { marginLeft: 10 },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 30,
   },
-  rememberMe: {flexDirection: 'row', alignItems: 'center'},
+  rememberMe: { flexDirection: 'row', alignItems: 'center' },
   rememberText: {
     marginLeft: 6,
     fontSize: 14,
     color: '#333',
     fontFamily: 'Segoe UI',
   },
-  forgot: {fontSize: 14, color: '#6a380f', fontWeight: '600'},
+  forgot: { fontSize: 14, color: '#6a380f', fontWeight: '600' },
   loginBtn: {
     backgroundColor: '#6a380f',
     paddingVertical: 14,
@@ -189,7 +203,7 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     fontFamily: 'Segoe UI',
   },
-  signupWrapper: {flexDirection: 'row', justifyContent: 'center'},
+  signupWrapper: { flexDirection: 'row', justifyContent: 'center' },
   signupText: {
     color: '#777',
     fontSize: 14,

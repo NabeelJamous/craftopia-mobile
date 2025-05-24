@@ -1,6 +1,6 @@
 export const Roles = Object.freeze({
-  CUSTOMER: 'Customer',
-  CRAFTER: 'Crafter',
+  CUSTOMER: 'customer',
+  CRAFTER: 'crafter',
 });
 
 // Optional: for dropdowns or iteration
