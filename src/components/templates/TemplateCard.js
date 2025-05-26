@@ -3,42 +3,39 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
   Image,
+  TouchableOpacity,
   Dimensions,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const screenWidth = Dimensions.get('window').width;
-const cardWidth = (screenWidth - 48) / 2; // 16 padding + 16 total gap (8 on each side)
+const cardWidth = (screenWidth - 36) / 2;
 
 const TemplateCard = ({template, liked, onToggleLike}) => {
   return (
-    <View style={styles.card}>
-      <TouchableOpacity onPress={onToggleLike} style={styles.likeIcon}>
-        <Ionicons
-          name={liked ? 'heart' : 'heart-outline'}
-          size={20}
-          color="#6a380f"
-        />
-      </TouchableOpacity>
-
+    <View style={[styles.card, {width: cardWidth}]}>
       <Image source={{uri: template.mainImage}} style={styles.image} />
 
-      <Text style={styles.title}>{template.name}</Text>
-      <Text style={styles.craft}>{template.craftType?.toLowerCase()}</Text>
-      <Text style={styles.by}>by {template.crafterName}</Text>
-
-      <View style={styles.colors}>
-        {template.availableColors?.map((color, index) => (
-          <View
-            key={index}
-            style={[styles.colorDot, {backgroundColor: color}]}
+      {/* Overlay */}
+      <View style={styles.overlay}>
+        <TouchableOpacity onPress={onToggleLike} style={styles.iconWrapper}>
+          <Ionicons
+            name={liked ? 'heart' : 'heart-outline'}
+            size={22}
+            color="#FF4D67"
           />
-        ))}
-      </View>
+        </TouchableOpacity>
 
-      <Text style={styles.price}>${template.price?.toFixed(2)}</Text>
+        <View style={styles.infoBox}>
+          <Text style={styles.name} numberOfLines={1}>
+            {template.name}
+          </Text>
+          <Text style={styles.price}>
+            ${template.price?.toFixed(2) || '0.00'}
+          </Text>
+        </View>
+      </View>
     </View>
   );
 };
@@ -47,65 +44,45 @@ export default TemplateCard;
 
 const styles = StyleSheet.create({
   card: {
-    width: cardWidth,
-    backgroundColor: '#fff',
-    borderWidth: 1.5,
-    borderColor: '#6a380f',
-    borderRadius: 16,
-    padding: 12,
-    alignItems: 'center',
-    position: 'relative',
-  },
-  likeIcon: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    zIndex: 1,
+    aspectRatio: 3 / 4,
+    borderRadius: 20,
+    overflow: 'hidden',
+    marginBottom: 12,
+    backgroundColor: '#f9f9f9',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   image: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: '100%',
+    height: '100%',
     resizeMode: 'cover',
-    marginBottom: 10,
   },
-  title: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    color: '#000',
-    fontFamily: 'Segoe UI',
-    textAlign: 'center',
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'space-between',
+    padding: 10,
   },
-  craft: {
-    color: '#333',
-    fontSize: 14,
-    textTransform: 'lowercase',
-    fontFamily: 'Segoe UI',
+  iconWrapper: {
+    alignItems: 'flex-end',
   },
-  by: {
-    color: '#888',
-    fontSize: 13,
-    fontStyle: 'italic',
-    marginBottom: 6,
-    fontFamily: 'Segoe UI',
+  infoBox: {
+    backgroundColor: 'rgba(0, 0, 0, 0.35)',
+    borderRadius: 12,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
   },
-  colors: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginVertical: 4,
-  },
-  colorDot: {
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    marginHorizontal: 2,
-    borderWidth: 1,
-    borderColor: '#ccc',
+  name: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 18,
+    marginBottom: 4,
   },
   price: {
-    fontWeight: '600',
-    fontSize: 16,
-    color: '#6a380f',
-    marginTop: 6,
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '500',
   },
 });

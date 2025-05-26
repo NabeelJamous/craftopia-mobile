@@ -18,6 +18,8 @@ import BottomSheetModal from '../modals/BottomSheetModal';
 import StatCard from '../reviews/StatCard';
 import ReviewCard from '../reviews/ReviewCard';
 import UserAvatar from '../UserAvatar/UserAvatar'; // ✅ using your avatar component
+import CrafterCard from './CrafterCard'; // adjust path if needed
+
 
 const screenWidth = Dimensions.get('window').width;
 const cardWidth = (screenWidth - 60) / 2;
@@ -95,18 +97,9 @@ const CrafterSearch = () => {
     setShowReviews(true);
   };
 
-  const renderCrafter = ({ item }) => (
-    <TouchableOpacity
-      style={styles.card}
-      onPress={() => handleOpenReviews(item)}
-      activeOpacity={0.85}
-    >
-      <UserAvatar previewUrl={item.avatarUrl} user={item} size={70} />
-      <Text style={styles.name}>{item.name}</Text>
-      <Text style={styles.craft}>{item.craft}</Text>
-      <Text style={styles.rating}>⭐ {item.rating?.toFixed(1) || 0} / 5</Text>
-    </TouchableOpacity>
-  );
+const renderCrafter = ({ item }) => (
+  <CrafterCard crafter={item} onPress={() => handleOpenReviews(item)} />
+);
 
   const positiveCount = reviews.filter(r => r.sentiment === 'positive').length;
   const negativeCount = reviews.filter(r => r.sentiment === 'negative').length;
@@ -272,32 +265,6 @@ const styles = StyleSheet.create({
   row: {
     justifyContent: 'space-between',
     marginBottom: 16,
-  },
-  card: {
-    width: cardWidth,
-    backgroundColor: '#fff',
-    borderRadius: 14,
-    padding: 14,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  name: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#6a380f',
-    marginBottom: 2,
-  },
-  craft: {
-    fontSize: 14,
-    color: '#444',
-  },
-  rating: {
-    fontSize: 13,
-    color: '#666',
-    marginTop: 4,
   },
   empty: {
     textAlign: 'center',

@@ -3,7 +3,6 @@ import {
   View,
   Text,
   FlatList,
-  Image,
   StyleSheet,
   ActivityIndicator,
   TouchableOpacity,
@@ -11,6 +10,7 @@ import {
 import { useUser } from '../../context/UserContext';
 import { fetchRecommendedTemplates } from '../../api/templateService';
 import TemplateDetailsModal from '../modals/TemplateDetailsModal';
+import TemplateCard from '../templates/TemplateCard';
 
 const RecommendedTemplates = () => {
   const { user } = useUser();
@@ -51,24 +51,17 @@ const RecommendedTemplates = () => {
         showsHorizontalScrollIndicator={false}
         renderItem={({ item }) => (
           <TouchableOpacity
-            style={styles.templateCard}
             onPress={() => {
               setSelectedTemplate(item);
               setShowModal(true);
             }}
+            style={{ marginHorizontal: 8 }}
           >
-            <Image source={{ uri: item.mainImage }} style={styles.image} />
-            <Text style={styles.name}>{item.name}</Text>
-
-            {/* Available Colors */}
-            <View style={styles.colorRow}>
-              {item.availableColors?.map((color, i) => (
-                <View
-                  key={i}
-                  style={[styles.colorDot, { backgroundColor: color }]}
-                />
-              ))}
-            </View>
+            <TemplateCard
+              template={item}
+              liked={false}
+              onToggleLike={() => {}}
+            />
           </TouchableOpacity>
         )}
       />
@@ -102,42 +95,4 @@ const styles = StyleSheet.create({
     marginTop: 16,
     fontStyle: 'italic',
   },
-  templateCard: {
-    backgroundColor: '#fff',
-    marginHorizontal: 8,
-    borderRadius: 12,
-    padding: 10,
-    width: 170,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  image: {
-    width: '100%',
-    height: 150,
-    borderRadius: 10,
-    marginBottom: 8,
-  },
-  name: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#333',
-    textAlign: 'center',
-  },
-  colorRow: {
-  flexDirection: 'row',
-  justifyContent: 'center',
-  marginTop: 6,
-},
-colorDot: {
-  width: 20,
-  height: 20,
-  borderRadius: 10,
-  marginHorizontal: 3,
-  borderWidth: 1,
-  borderColor: '#ccc',
-},
-
 });
