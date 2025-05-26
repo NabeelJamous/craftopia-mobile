@@ -10,13 +10,14 @@ import {
 } from 'react-native';
 import { useUser } from '../../context/UserContext';
 import { fetchRecommendedTemplates } from '../../api/templateService';
-import { useNavigation } from '@react-navigation/native';
+import TemplateDetailsModal from '../modals/TemplateDetailsModal';
 
 const RecommendedTemplates = () => {
   const { user } = useUser();
-  const navigation = useNavigation();
   const [loading, setLoading] = useState(true);
   const [templates, setTemplates] = useState([]);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,14 +52,31 @@ const RecommendedTemplates = () => {
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.templateCard}
-            onPress={() =>
-              navigation.navigate('TemplateDetails', { templateId: item._id })
-            }
+            onPress={() => {
+              setSelectedTemplate(item);
+              setShowModal(true);
+            }}
           >
             <Image source={{ uri: item.mainImage }} style={styles.image} />
             <Text style={styles.name}>{item.name}</Text>
+
+            {/* Available Colors */}
+            <View style={styles.colorRow}>
+              {item.availableColors?.map((color, i) => (
+                <View
+                  key={i}
+                  style={[styles.colorDot, { backgroundColor: color }]}
+                />
+              ))}
+            </View>
           </TouchableOpacity>
         )}
+      />
+
+      <TemplateDetailsModal
+        visible={showModal}
+        onClose={() => setShowModal(false)}
+        template={selectedTemplate}
       />
     </View>
   );
@@ -108,4 +126,18 @@ const styles = StyleSheet.create({
     color: '#333',
     textAlign: 'center',
   },
+  colorRow: {
+  flexDirection: 'row',
+  justifyContent: 'center',
+  marginTop: 6,
+},
+colorDot: {
+  width: 20,
+  height: 20,
+  borderRadius: 10,
+  marginHorizontal: 3,
+  borderWidth: 1,
+  borderColor: '#ccc',
+},
+
 });
