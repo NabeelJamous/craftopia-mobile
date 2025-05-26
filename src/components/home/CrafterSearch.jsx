@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   Animated,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useFocusEffect } from '@react-navigation/native';
 import { useUser } from '../../context/UserContext';
 import { fetchUsers } from '../../api/userService';
 import { getReviewsByEmail } from '../../api/reviewService';
@@ -17,9 +18,7 @@ import OptionPickerModal from '../modals/OptionPickerModal';
 import BottomSheetModal from '../modals/BottomSheetModal';
 import StatCard from '../reviews/StatCard';
 import ReviewCard from '../reviews/ReviewCard';
-import UserAvatar from '../UserAvatar/UserAvatar'; // ✅ using your avatar component
-import CrafterCard from './CrafterCard'; // adjust path if needed
-
+import CrafterCard from './CrafterCard';
 
 const screenWidth = Dimensions.get('window').width;
 const cardWidth = (screenWidth - 60) / 2;
@@ -58,22 +57,28 @@ const CrafterSearch = () => {
     setUsers(data);
   };
 
-  useEffect(() => {
-    loadUsers();
-  }, [query, selectedCraft, sortByRating]);
+  // ✅ Refresh crafter list on screen focus
+  useFocusEffect(
+    useCallback(() => {
+      loadUsers();
+    }, [query, selectedCraft, sortByRating])
+  );
 
-  useEffect(() => {
-    if (reviews.length === 0) return;
-    animatedValues.current = reviews.map(() => new Animated.Value(0));
-    reviews.forEach((_, index) => {
-      Animated.timing(animatedValues.current[index], {
-        toValue: 1,
-        duration: 400,
-        delay: index * 100,
-        useNativeDriver: true,
-      }).start();
-    });
-  }, [reviews]);
+  // ✅ Animate reviews (keep as-is)
+  useFocusEffect(
+    useCallback(() => {
+      if (reviews.length === 0) return;
+      animatedValues.current = reviews.map(() => new Animated.Value(0));
+      reviews.forEach((_, index) => {
+        Animated.timing(animatedValues.current[index], {
+          toValue: 1,
+          duration: 400,
+          delay: index * 100,
+          useNativeDriver: true,
+        }).start();
+      });
+    }, [reviews])
+  );
 
   const handleReset = () => {
     setQuery('');
@@ -97,9 +102,9 @@ const CrafterSearch = () => {
     setShowReviews(true);
   };
 
-const renderCrafter = ({ item }) => (
-  <CrafterCard crafter={item} onPress={() => handleOpenReviews(item)} />
-);
+  const renderCrafter = ({ item }) => (
+    <CrafterCard crafter={item} onPress={() => handleOpenReviews(item)} />
+  );
 
   const positiveCount = reviews.filter(r => r.sentiment === 'positive').length;
   const negativeCount = reviews.filter(r => r.sentiment === 'negative').length;

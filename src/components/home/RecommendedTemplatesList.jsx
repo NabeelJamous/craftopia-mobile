@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useUser } from '../../context/UserContext';
+import { useFocusEffect } from '@react-navigation/native';
 import { fetchRecommendedTemplates } from '../../api/templateService';
 import TemplateDetailsModal from '../modals/TemplateDetailsModal';
 import TemplateCard from '../templates/TemplateCard';
@@ -19,23 +20,28 @@ const RecommendedTemplates = () => {
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (!user?.email) return;
-        const data = await fetchRecommendedTemplates(user.email);
-        setTemplates(data);
-      } catch (err) {
-        console.error('Error fetching recommended templates:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  useFocusEffect(
+    useCallback(() => {
+      const fetchData = async () => {
+        try {
+          setLoading(true);
+          if (!user?.email) return;
+          const data = await fetchRecommendedTemplates(user.email);
+          setTemplates(data);
+        } catch (err) {
+          console.error('Error fetching recommended templates:', err);
+        } finally {
+          setLoading(false);
+        }
+      };
 
-    fetchData();
-  }, [user]);
+      fetchData();
+    }, [user?.email])
+  );
 
-  if (loading) return <ActivityIndicator size="small" color="#6a380f" style={{ marginTop: 16 }} />;
+  if (loading) {
+    return <ActivityIndicator size="small" color="#6a380f" style={{ marginTop: 16 }} />;
+  }
 
   if (!templates.length) {
     return <Text style={styles.empty}>No recommended templates found.</Text>;

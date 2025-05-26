@@ -1,14 +1,11 @@
 import React from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
-import { useUser } from '../context/UserContext';
 import GreetingHeader from '../components/home/GreetingHeader';
 import AppointmentCard from '../components/home/AppointmentCard';
 import RecommendedTemplates from '../components/home/RecommendedTemplatesList';
 import CrafterSearch from '../components/home/CrafterSearch';
 
 const HomeScreen = () => {
-  const { user } = useUser();
-
   const sections = [
     { key: 'greeting', component: <GreetingHeader /> },
     { key: 'appointment', component: <AppointmentCard /> },

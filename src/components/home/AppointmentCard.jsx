@@ -1,9 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, { useState, useCallback } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useUser } from '../../context/UserContext';
 import { getAppointmentsByEmail } from '../../api/appointmentService';
-import { getUserByEmail } from '../../api/userService'; 
+import { getUserByEmail } from '../../api/userService';
 
 const AppointmentCard = () => {
   const { user } = useUser();
@@ -12,31 +18,38 @@ const AppointmentCard = () => {
   const [appointment, setAppointment] = useState(null);
   const [crafterName, setCrafterName] = useState(null);
 
-  useEffect(() => {
-    const fetchAppointments = async () => {
-      try {
-        if (!user?.email) return;
+  useFocusEffect(
+    useCallback(() => {
+      const fetchAppointments = async () => {
+        try {
+          setLoading(true);
+          if (!user?.email) return;
 
-        const data = await getAppointmentsByEmail(user.email, 'customer');
-        const nextAppointment = data[0] || null;
-        setAppointment(nextAppointment);
+          const data = await getAppointmentsByEmail(user.email, 'customer');
+          const nextAppointment = data[0] || null;
+          setAppointment(nextAppointment);
 
-        if (nextAppointment?.crafterEmail) {
-          const crafter = await getUserByEmail(nextAppointment.crafterEmail);
-          setCrafterName(crafter?.name || nextAppointment.crafterEmail);
+          if (nextAppointment?.crafterEmail) {
+            const crafter = await getUserByEmail(nextAppointment.crafterEmail);
+            setCrafterName(crafter?.name || nextAppointment.crafterEmail);
+          }
+        } catch (err) {
+          console.error('Error fetching appointments:', err);
+        } finally {
+          setLoading(false);
         }
-      } catch (err) {
-        console.error('Error fetching appointments:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+      };
 
-    fetchAppointments();
-  }, [user]);
+      fetchAppointments();
+    }, [user?.email])
+  );
 
   if (loading) {
-    return <ActivityIndicator size="small" color="#6a380f" />;
+    return (
+      <View style={[styles.card, styles.center]}>
+        <ActivityIndicator size="small" color="#fff" />
+      </View>
+    );
   }
 
   return (
@@ -45,7 +58,9 @@ const AppointmentCard = () => {
         <>
           <Text style={styles.label}>Your Next Appointment</Text>
           <Text style={styles.detail}>Crafter: {crafterName}</Text>
-          <Text style={styles.detail}>Date: {new Date(appointment.date).toLocaleString()}</Text>
+          <Text style={styles.detail}>
+            Date: {new Date(appointment.date).toLocaleString()}
+          </Text>
         </>
       ) : (
         <TouchableOpacity onPress={() => navigation.navigate('Crafters')}>
@@ -87,11 +102,15 @@ const styles = StyleSheet.create({
   bookButton: {
     marginTop: 8,
     fontSize: 16,
-    color: '#fff',
+    color: '#6a380f',
     backgroundColor: '#fff',
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 8,
-    alignSelf: 'flex-start',
+    textAlign: 'center',
+  },
+  center: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
