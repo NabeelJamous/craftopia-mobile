@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import {
   View,
   Text,
@@ -21,7 +21,6 @@ import ReviewCard from '../reviews/ReviewCard';
 import CrafterCard from './CrafterCard';
 
 const screenWidth = Dimensions.get('window').width;
-const cardWidth = (screenWidth - 60) / 2;
 
 const hardcodedCrafts = [
   'Plasterer',
@@ -41,6 +40,7 @@ const CrafterSearch = () => {
   const [sortByRating, setSortByRating] = useState(null);
   const [users, setUsers] = useState([]);
   const [showCraftModal, setShowCraftModal] = useState(false);
+
   const [selectedCrafter, setSelectedCrafter] = useState(null);
   const [showReviews, setShowReviews] = useState(false);
   const [reviews, setReviews] = useState([]);
@@ -57,27 +57,10 @@ const CrafterSearch = () => {
     setUsers(data);
   };
 
-  // ✅ Refresh crafter list on screen focus
   useFocusEffect(
     useCallback(() => {
       loadUsers();
     }, [query, selectedCraft, sortByRating])
-  );
-
-  // ✅ Animate reviews (keep as-is)
-  useFocusEffect(
-    useCallback(() => {
-      if (reviews.length === 0) return;
-      animatedValues.current = reviews.map(() => new Animated.Value(0));
-      reviews.forEach((_, index) => {
-        Animated.timing(animatedValues.current[index], {
-          toValue: 1,
-          duration: 400,
-          delay: index * 100,
-          useNativeDriver: true,
-        }).start();
-      });
-    }, [reviews])
   );
 
   const handleReset = () => {
@@ -101,6 +84,19 @@ const CrafterSearch = () => {
     }
     setShowReviews(true);
   };
+
+  useEffect(() => {
+    if (reviews.length === 0) return;
+    animatedValues.current = reviews.map(() => new Animated.Value(0));
+    reviews.forEach((_, index) => {
+      Animated.timing(animatedValues.current[index], {
+        toValue: 1,
+        duration: 400,
+        delay: index * 100,
+        useNativeDriver: true,
+      }).start();
+    });
+  }, [reviews]);
 
   const renderCrafter = ({ item }) => (
     <CrafterCard crafter={item} onPress={() => handleOpenReviews(item)} />
@@ -177,39 +173,45 @@ const CrafterSearch = () => {
         title="Reviews"
         height="80%"
       >
-        <Text style={styles.reviewTitle}>Reviews</Text>
+        <Text style={styles.reviewTitle}>
+          Reviews for {selectedCrafter?.name || selectedCrafter?.email}
+        </Text>
 
         <View style={styles.statsRow}>
           <StatCard icon="😊" count={positiveCount} bgColor="#6a380f" />
           <StatCard icon="🙁" count={negativeCount} bgColor="#a94438" />
         </View>
 
-        <FlatList
-          data={reviews}
-          renderItem={({ item, index }) => (
-            <Animated.View
-              style={{
-                opacity: animatedValues.current[index] || new Animated.Value(1),
-                transform: [
-                  {
-                    translateY: animatedValues.current[index]
-                      ? animatedValues.current[index].interpolate({
-                          inputRange: [0, 1],
-                          outputRange: [20, 0],
-                        })
-                      : 0,
-                  },
-                ],
-                marginBottom: 16,
-              }}
-            >
-              <ReviewCard review={item} />
-            </Animated.View>
-          )}
-          keyExtractor={(_, i) => i.toString()}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 30 }}
-        />
+        {reviews.length === 0 ? (
+          <Text style={styles.empty}>No reviews found.</Text>
+        ) : (
+          <FlatList
+            data={reviews}
+            keyExtractor={(_, i) => i.toString()}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: 30 }}
+            renderItem={({ item, index }) => (
+              <Animated.View
+                style={{
+                  opacity: animatedValues.current[index] || new Animated.Value(1),
+                  transform: [
+                    {
+                      translateY: animatedValues.current[index]
+                        ? animatedValues.current[index].interpolate({
+                            inputRange: [0, 1],
+                            outputRange: [20, 0],
+                          })
+                        : 0,
+                    },
+                  ],
+                  marginBottom: 16,
+                }}
+              >
+                <ReviewCard review={item} />
+              </Animated.View>
+            )}
+          />
+        )}
       </BottomSheetModal>
     </View>
   );
@@ -282,6 +284,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#6a380f',
     marginBottom: 12,
+    textAlign: 'center',
   },
   statsRow: {
     flexDirection: 'row',

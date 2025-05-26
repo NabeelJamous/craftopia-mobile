@@ -1,4 +1,3 @@
-// src/components/modals/BottomSheetModal.jsx
 import React, { useEffect, useRef } from 'react';
 import {
   Modal,
@@ -16,15 +15,11 @@ const BottomSheetModal = ({ visible, onClose, children, height = '80%', title = 
   const slideAnim = useRef(new Animated.Value(screenHeight)).current;
 
   useEffect(() => {
-    if (visible) {
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-    } else {
-      slideAnim.setValue(screenHeight);
-    }
+    Animated.timing(slideAnim, {
+      toValue: visible ? 0 : screenHeight,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
   }, [visible]);
 
   return (
@@ -35,9 +30,21 @@ const BottomSheetModal = ({ visible, onClose, children, height = '80%', title = 
       onRequestClose={onClose}
     >
       <View style={styles.overlay}>
-        <Animated.View style={[styles.sheet, { height, transform: [{ translateY: slideAnim }] }]}>
+        <Animated.View
+          style={[
+            styles.sheet,
+            {
+              height,
+              transform: [{ translateY: slideAnim }],
+            },
+          ]}
+        >
           <View style={styles.header}>
-            {title && <View style={styles.titleBox}><Ionicons name="chevron-up" size={24} color="#aaa" /></View>}
+            {title && (
+              <View style={styles.titleBox}>
+                <Ionicons name="chevron-up" size={24} color="#aaa" />
+              </View>
+            )}
             <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
               <Ionicons name="close" size={24} color="#6a380f" />
             </TouchableOpacity>

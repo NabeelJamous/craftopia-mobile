@@ -168,7 +168,8 @@ const AppointmentsScreen = ({ route }) => {
                 }))
               }
               starSize={24}
-              color="#6a380f"
+              color="#FFD700"
+              fraction={0}
             />
             <TextInput
               placeholder="Write your review..."

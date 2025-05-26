@@ -13,7 +13,7 @@ import {useNavigation} from '@react-navigation/native';
 const screenWidth = Dimensions.get('window').width;
 const cardWidth = (screenWidth - 36) / 2;
 
-const CrafterCard = ({crafter}) => {
+const CrafterCard = ({crafter, onPress}) => {
   const navigation = useNavigation();
   const hasImage = !!crafter.avatarUrl;
 
@@ -26,7 +26,10 @@ const CrafterCard = ({crafter}) => {
   };
 
   return (
-    <TouchableOpacity style={[styles.card, {width: cardWidth}]}>
+    <TouchableOpacity
+      style={[styles.card, {width: cardWidth}]}
+      onPress={onPress} // ✅ this enables the card to open the review modal
+    >
       {hasImage ? (
         <Image source={{uri: crafter.avatarUrl}} style={styles.image} />
       ) : (
