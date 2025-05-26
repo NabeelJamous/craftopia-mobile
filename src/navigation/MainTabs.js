@@ -21,37 +21,45 @@ const MainTabs = () => {
     <Tab.Navigator
       screenOptions={({route}) => ({
         headerShown: false,
-        tabBarShowLabel: true,
+        tabBarShowLabel: false,
         tabBarStyle: styles.tabBar,
-        tabBarLabelStyle: styles.tabLabel,
-        tabBarIcon: ({focused, color}) => {
-          if (route.name === 'Home') {
-            return <Ionicons name="home-outline" size={24} color={color} />;
-          } else if (route.name === 'Appointments') {
-            return <Ionicons name="calendar-outline" size={24} color={color} />;
-          } else if (route.name === 'Templates') {
-            return <Ionicons name="images-outline" size={24} color={color} />;
-          } else if (route.name === 'Chat') {
+        tabBarItemStyle: styles.tabItem,
+        tabBarIcon: ({focused}) => {
+          let iconName;
+
+          if (route.name === 'Home') iconName = 'home-outline';
+          else if (route.name === 'Appointments') iconName = 'calendar-outline';
+          else if (route.name === 'Templates') iconName = 'images-outline';
+          else if (route.name === 'Chat') iconName = 'chatbubbles-outline';
+          else if (route.name === 'Workshops') iconName = 'school-outline';
+
+          if (route.name === 'Profile') {
             return (
-              <Ionicons name="chatbubbles-outline" size={24} color={color} />
-            );
-          } else if (route.name === 'Workshops') {
-            return <Ionicons name="school-outline" size={24} color={color} />;
-          } else if (route.name === 'Profile') {
-            return user?.avatarUrl ? (
-              <Image source={{uri: user.avatarUrl}} style={styles.avatar} />
-            ) : (
-              <View style={styles.fallbackAvatar}>
-                <Text style={styles.avatarText}>
-                  {user?.name?.charAt(0)?.toUpperCase() || '?'}
-                </Text>
+              <View
+                style={[styles.iconContainer, focused && styles.activeIcon]}>
+                {user?.avatarUrl ? (
+                  <Image source={{uri: user.avatarUrl}} style={styles.avatar} />
+                ) : (
+                  <View style={styles.fallbackAvatar}>
+                    <Text style={styles.avatarText}>
+                      {user?.name?.charAt(0)?.toUpperCase() || '?'}
+                    </Text>
+                  </View>
+                )}
               </View>
             );
           }
+
+          return (
+            <View style={[styles.iconContainer, focused && styles.activeIcon]}>
+              <Ionicons
+                name={iconName}
+                size={28} // ✅ Bigger icon size
+                color={focused ? '#fff' : '#6a380f'}
+              />
+            </View>
+          );
         },
-        tabBarActiveTintColor: '#fff',
-        tabBarInactiveTintColor: '#6a380f',
-        tabBarActiveBackgroundColor: '#6a380f',
       })}>
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Appointments" component={AppointmentsScreen} />
@@ -65,23 +73,46 @@ const MainTabs = () => {
 
 const styles = StyleSheet.create({
   tabBar: {
+    position: 'absolute',
+    bottom: 10,
+    left: 20,
+    right: 20,
     height: 60,
-    borderTopWidth: 0,
+    backgroundColor: '#fff',
+    borderRadius: 35,
     elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 4},
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    overflow: 'hidden',
   },
-  tabLabel: {
-    fontSize: 12,
-    fontWeight: '600',
+  tabItem: {
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    height: '100%',
+    paddingBottom: 10,
+  },
+  iconContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    marginBottom: -16,
+  },
+  activeIcon: {
+    backgroundColor: '#6a380f',
   },
   avatar: {
-    width: 26,
-    height: 26,
-    borderRadius: 13,
+    width: 45,
+    height: 45,
+    borderRadius: 25,
   },
   fallbackAvatar: {
-    width: 26,
-    height: 26,
-    borderRadius: 13,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
     backgroundColor: '#ddd',
     justifyContent: 'center',
     alignItems: 'center',
