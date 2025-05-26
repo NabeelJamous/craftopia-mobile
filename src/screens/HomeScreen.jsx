@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { View, StyleSheet, FlatList } from 'react-native';
 import { useUser } from '../context/UserContext';
 import GreetingHeader from '../components/home/GreetingHeader';
 import AppointmentCard from '../components/home/AppointmentCard';
@@ -9,28 +9,21 @@ import CrafterSearch from '../components/home/CrafterSearch';
 const HomeScreen = () => {
   const { user } = useUser();
 
+  const sections = [
+    { key: 'greeting', component: <GreetingHeader /> },
+    { key: 'appointment', component: <AppointmentCard /> },
+    { key: 'recommended', component: <RecommendedTemplates /> },
+    { key: 'craftersearch', component: <CrafterSearch /> },
+  ];
+
   return (
-    <ScrollView
+    <FlatList
+      data={sections}
+      keyExtractor={item => item.key}
+      renderItem={({ item }) => <View style={styles.section}>{item.component}</View>}
       contentContainerStyle={styles.container}
       showsVerticalScrollIndicator={false}
-      keyboardShouldPersistTaps="handled"
-    >
-      <View style={styles.section}>
-        <GreetingHeader />
-      </View>
-
-      <View style={styles.section}>
-        <AppointmentCard />
-      </View>
-
-      <View style={styles.section}>
-        <RecommendedTemplates />
-      </View>
-
-      <View style={styles.section}>
-        <CrafterSearch />
-      </View>
-    </ScrollView>
+    />
   );
 };
 

@@ -6,32 +6,40 @@ import {
   TouchableOpacity,
   StyleSheet,
   FlatList,
-  Image,
   Dimensions,
   Animated,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useUser } from '../../context/UserContext';
 import { fetchUsers } from '../../api/userService';
-import { getReviewsByEmail } from '../../services/reviewService';
+import { getReviewsByEmail } from '../../api/reviewService';
 import OptionPickerModal from '../modals/OptionPickerModal';
 import BottomSheetModal from '../modals/BottomSheetModal';
 import StatCard from '../reviews/StatCard';
 import ReviewCard from '../reviews/ReviewCard';
-import { CraftList, CraftIcons } from '../../constants/crafts';
+import UserAvatar from '../UserAvatar/UserAvatar'; // ✅ using your avatar component
 
 const screenWidth = Dimensions.get('window').width;
 const cardWidth = (screenWidth - 60) / 2;
 
+const hardcodedCrafts = [
+  'Plasterer',
+  'Plumber',
+  'Electrician',
+  'Painter',
+  'Tiler',
+  'Carpenter',
+  'Aluminum and Glass Technician',
+  'Cleaner',
+];
+
 const CrafterSearch = () => {
   const { user } = useUser();
-
   const [query, setQuery] = useState('');
   const [selectedCraft, setSelectedCraft] = useState('');
   const [sortByRating, setSortByRating] = useState(null);
   const [users, setUsers] = useState([]);
   const [showCraftModal, setShowCraftModal] = useState(false);
-
   const [selectedCrafter, setSelectedCrafter] = useState(null);
   const [showReviews, setShowReviews] = useState(false);
   const [reviews, setReviews] = useState([]);
@@ -93,7 +101,7 @@ const CrafterSearch = () => {
       onPress={() => handleOpenReviews(item)}
       activeOpacity={0.85}
     >
-      <Image source={{ uri: item.avatarUrl }} style={styles.avatar} />
+      <UserAvatar previewUrl={item.avatarUrl} user={item} size={70} />
       <Text style={styles.name}>{item.name}</Text>
       <Text style={styles.craft}>{item.craft}</Text>
       <Text style={styles.rating}>⭐ {item.rating?.toFixed(1) || 0} / 5</Text>
@@ -114,11 +122,9 @@ const CrafterSearch = () => {
           value={query}
           onChangeText={setQuery}
         />
-        {query ? (
-          <TouchableOpacity onPress={handleReset}>
-            <Ionicons name="close-circle" size={20} color="#6a380f" />
-          </TouchableOpacity>
-        ) : null}
+        <TouchableOpacity onPress={handleReset}>
+          <Ionicons name="close-circle" size={20} color="#6a380f" />
+        </TouchableOpacity>
       </View>
 
       <Text style={styles.title}>Explore Crafters</Text>
@@ -147,7 +153,6 @@ const CrafterSearch = () => {
       {users.length > 0 ? (
         <FlatList
           data={users}
-          key={'2-columns'}
           keyExtractor={item => item._id}
           renderItem={renderCrafter}
           numColumns={2}
@@ -162,8 +167,7 @@ const CrafterSearch = () => {
       <OptionPickerModal
         visible={showCraftModal}
         title="Select a Craft"
-        options={CraftList}
-        icons={CraftIcons}
+        options={hardcodedCrafts}
         onSelect={craft => setSelectedCraft(craft)}
         onClose={() => setShowCraftModal(false)}
       />
@@ -279,12 +283,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowRadius: 4,
     elevation: 2,
-  },
-  avatar: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    marginBottom: 10,
   },
   name: {
     fontSize: 16,

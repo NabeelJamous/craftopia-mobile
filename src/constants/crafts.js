@@ -9,10 +9,8 @@ export const Crafts = Object.freeze({
   CLEANER: 'Cleaner',
 });
 
-// Optional: if you want a list for dropdowns
 export const CraftList = Object.values(Crafts);
 
-// Icon map without type annotations
 export const CraftIcons = {
   [Crafts.PLASTERER]: 'hammer-outline',
   [Crafts.PLUMBER]: 'water-outline',
