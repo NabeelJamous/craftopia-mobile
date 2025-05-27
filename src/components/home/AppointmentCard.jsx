@@ -63,7 +63,7 @@ const AppointmentCard = () => {
           </Text>
         </>
       ) : (
-        <TouchableOpacity onPress={() => navigation.navigate('Crafters')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Appointments')}>
           <Text style={styles.label}>No upcoming appointments</Text>
           <Text style={styles.bookButton}>Book an Appointment</Text>
         </TouchableOpacity>

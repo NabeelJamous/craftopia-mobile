@@ -17,8 +17,10 @@ import MapSelector from '../components/map/MapSelector';
 import FullScreenMap from '../components/map/FullScreenMap';
 import {getUserByEmail} from '../api/userService';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
 import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation} from '@react-navigation/native';
+
 const {height} = Dimensions.get('window');
 
 const CLOUDINARY_UPLOAD_URL =
@@ -27,6 +29,8 @@ const CLOUDINARY_UPLOAD_PRESET = 'YOUR_UPLOAD_PRESET';
 
 const ProfileScreen = () => {
   const {user, setUser} = useUser();
+  const navigation = useNavigation();
+
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
@@ -131,7 +135,7 @@ const ProfileScreen = () => {
   }) => {
     try {
       const response = await fetch(
-        `http://192.168.1.14:3000/user/update-profile/${userId}`,
+        `http://192.168.1.17:3000/user/update-profile/${userId}`,
         {
           method: 'PUT',
           headers: {'Content-Type': 'application/json'},
@@ -184,6 +188,20 @@ const ProfileScreen = () => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('user');
+      setUser(null);
+      Toast.show({
+        type: 'success',
+        text1: 'Logged out successfully!',
+      });
+      navigation.replace('Login');
+    } catch (err) {
+      console.error('Logout error:', err);
+    }
+  };
+
   if (isMapFullScreen) {
     return (
       <FullScreenMap
@@ -198,7 +216,7 @@ const ProfileScreen = () => {
 
   return (
     <ScrollView
-      contentContainerStyle={styles.container}
+      contentContainerStyle={[styles.container, {paddingBottom: 80}]}
       keyboardShouldPersistTaps="handled">
       <TouchableOpacity onPress={pickImage}>
         <Image source={{uri: avatarUrl}} style={styles.avatar} />
@@ -224,7 +242,6 @@ const ProfileScreen = () => {
           onChangeText={setName}
           style={styles.input}
         />
-
         <TextInput
           placeholder="New Password"
           value={password}
@@ -250,6 +267,16 @@ const ProfileScreen = () => {
         onPress={handleSave}
         disabled={loading}>
         <Text style={styles.buttonText}>Update Profile</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+        <Ionicons
+          name="log-out-outline"
+          size={20}
+          color="#6a380f"
+          style={{marginRight: 6}}
+        />
+        <Text style={styles.logoutText}>Logout</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -311,12 +338,28 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
     borderRadius: 30,
     alignSelf: 'center',
-    marginBottom: 30,
+    marginBottom: 20,
   },
   buttonText: {
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  logoutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderColor: '#6a380f',
+    borderWidth: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 30,
+    marginBottom: 30,
+  },
+  logoutText: {
+    color: '#6a380f',
+    fontWeight: 'bold',
+    fontSize: 15,
   },
   email: {
     fontSize: 15,
