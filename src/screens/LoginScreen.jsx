@@ -48,42 +48,48 @@ const LoginScreen = ({ navigation }) => {
   }, []);
 
   const handleLogin = async () => {
-    if (!email || !password) {
+  if (!email || !password) {
+    Toast.show({
+      type: 'error',
+      text1: 'Missing Fields',
+      text2: 'Please enter your email and password.',
+    });
+    return;
+  }
+
+  try {
+    const response = await login(email, password);
+    console.log('🔐 Login API response:', response);
+
+    if (response?.user) {
+      await loginUser(response.user);
+      console.log('✅ User saved to context:', response.user);
+
       Toast.show({
-        type: 'error',
-        text1: 'Missing Fields',
-        text2: 'Please enter your email and password.',
+        type: 'success',
+        text1: 'Login Successful',
+        text2: `Welcome, ${response.user.name || 'user'}!`,
       });
-      return;
-    }
 
-    try {
-      const response = await login(email, password);
-      console.log('🔐 Login API response:', response);
-
-      if (response?.user) {
-        await loginUser(response.user); // ✅ save only the user object
-        console.log('✅ User saved to context:', response.user);
-
-        Toast.show({
-          type: 'success',
-          text1: 'Login Successful',
-          text2: `Welcome, ${response.user.name || 'user'}!`,
-        });
-
-        navigation.replace('Home');
+      // 🔽 Redirect based on role
+      if (response.user.role === 'crafter') {
+        navigation.replace('CrafterHome');
       } else {
-        throw new Error('Invalid credentials or missing user data');
+        navigation.replace('Home');
       }
-    } catch (err) {
-      console.error('❌ Login Error:', err.message);
-      Toast.show({
-        type: 'error',
-        text1: 'Login Failed',
-        text2: 'Invalid credentials. Try again.',
-      });
+    } else {
+      throw new Error('Invalid credentials or missing user data');
     }
-  };
+  } catch (err) {
+    console.error('❌ Login Error:', err.message);
+    Toast.show({
+      type: 'error',
+      text1: 'Login Failed',
+      text2: 'Invalid credentials. Try again.',
+    });
+  }
+};
+
 
   return (
     <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">

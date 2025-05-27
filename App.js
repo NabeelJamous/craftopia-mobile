@@ -10,6 +10,7 @@ import SignUpScreen from './src/screens/SignUpScreen';
 import SetPreferencesScreen from './src/screens/SetPreferencesScreen';
 import MainTabs from './src/navigation/MainTabs';
 import TemplateDetailsScreen from './src/screens/TemplateDetailsScreen'; // ✅ Add this import
+import CrafterTabs from './src/navigation/CrafterTabs';
 
 const Stack = createNativeStackNavigator();
 
@@ -30,6 +31,7 @@ const App = () => {
             name="TemplateDetails"
             component={TemplateDetailsScreen}
           />
+          <Stack.Screen name="CrafterHome" component={CrafterTabs} />
         </Stack.Navigator>
       </NavigationContainer>
       <Toast />
