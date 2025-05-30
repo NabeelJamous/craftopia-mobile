@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://192.168.1.17:3000/messages';
+const API_URL = 'http://192.168.1.32:3000/messages';
 
 const getChatMessages = async (sender, receiver) => {
   const response = await axios.get(`${API_URL}/get-chat`, {

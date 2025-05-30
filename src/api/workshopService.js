@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://192.168.1.17:3000/workshop';
+const API_URL = 'http://192.168.1.32:3000/workshop';
 
 const createWorkshop = async workshopData => {
   const response = await axios.post(`${API_URL}/create`, workshopData);

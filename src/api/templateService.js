@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://192.168.1.17:3000/templates';
+const API_URL = 'http://192.168.1.32:3000/templates';
 
 export const createTemplate = async templateData => {
   const response = await axios.post(API_URL, templateData);
@@ -62,8 +62,16 @@ export const generateFromImage = async imageUrl => {
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({imageUrl}),
   });
+
+  if (!res.ok) throw new Error('Backend error');
+
   const data = await res.json();
-  return data;
+
+  if (!data.title || !data.description) {
+    throw new Error('Missing AI response');
+  }
+
+  return data; // { title: '...', description: '...' }
 };
 
 export const importTemplatesFromProfile = async (profileUrl, email) => {

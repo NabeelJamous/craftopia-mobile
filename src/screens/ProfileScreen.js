@@ -135,7 +135,7 @@ const ProfileScreen = () => {
   }) => {
     try {
       const response = await fetch(
-        `http://192.168.1.17:3000/user/update-profile/${userId}`,
+        `http://192.168.1.32:3000/user/update-profile/${userId}`,
         {
           method: 'PUT',
           headers: {'Content-Type': 'application/json'},
