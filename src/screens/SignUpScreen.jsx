@@ -19,13 +19,19 @@ import OptionPickerModal from '../components/modals/OptionPickerModal';
 import { Crafts, CraftIcons } from '../constants/crafts';
 import { Roles, RoleIcons } from '../constants/roles';
 import { register } from '../api/authService';
+<<<<<<< HEAD
 import { useUser } from '../context/UserContext';
+=======
+>>>>>>> 9e1069c (first commit)
 
 const { width, height } = Dimensions.get('window');
 
 const SignUpScreen = ({ navigation }) => {
+<<<<<<< HEAD
   const { setAndStoreUser } = useUser();
 
+=======
+>>>>>>> 9e1069c (first commit)
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -108,12 +114,17 @@ const SignUpScreen = ({ navigation }) => {
       coordinates: [coords.longitude, coords.latitude],
     };
 
+<<<<<<< HEAD
     const userData = {
+=======
+    const response = await register(
+>>>>>>> 9e1069c (first commit)
       name,
       email,
       password,
       location,
       role,
+<<<<<<< HEAD
       craft: role === Roles.CRAFTER ? selectedCraft : '',
       avatarUrl: '',
     };
@@ -143,6 +154,19 @@ const SignUpScreen = ({ navigation }) => {
       } else {
         navigation.replace('Login');
       }
+=======
+      selectedCraft,
+      ""
+    );
+
+    if (response) {
+      Toast.show({
+        type: 'success',
+        text1: 'Registration Successful',
+        text2: 'You can now log in.',
+      });
+      navigation.navigate('Login');
+>>>>>>> 9e1069c (first commit)
     } else {
       Toast.show({
         type: 'error',

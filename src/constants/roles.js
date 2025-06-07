@@ -1,6 +1,11 @@
 export const Roles = Object.freeze({
+<<<<<<< HEAD
   CUSTOMER: 'customer',
   CRAFTER: 'crafter',
+=======
+  CUSTOMER: 'Customer',
+  CRAFTER: 'Crafter',
+>>>>>>> 9e1069c (first commit)
 });
 
 // Optional: for dropdowns or iteration

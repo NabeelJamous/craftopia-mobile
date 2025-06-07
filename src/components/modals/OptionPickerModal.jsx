@@ -21,7 +21,11 @@ const OptionPickerModal = ({
     <Modal
       visible={visible}
       animationType="slide"
+<<<<<<< HEAD
       transparent={true}
+=======
+      transparent
+>>>>>>> 9e1069c (first commit)
       onRequestClose={onClose}
     >
       <View style={styles.overlay}>
@@ -74,7 +78,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 20,
     maxHeight: '60%',
+<<<<<<< HEAD
     zIndex: 9999,
+=======
+>>>>>>> 9e1069c (first commit)
   },
   title: {
     fontSize: 18,
