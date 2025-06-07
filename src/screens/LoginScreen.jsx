@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import React, { useState, useRef, useEffect } from 'react';
-=======
-import React, {useState, useRef, useEffect} from 'react';
->>>>>>> 9e1069c (first commit)
 import {
   Text,
   StyleSheet,
@@ -18,30 +14,19 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Toast from 'react-native-toast-message';
 import AnimatedInputField from '../components/form/AnimatedInputField';
-<<<<<<< HEAD
 import { login } from '../api/authService';
 import { useUser } from '../context/UserContext'; // ✅ context import
 
 const { width, height } = Dimensions.get('window');
 
 const LoginScreen = ({ navigation }) => {
-=======
-import {login} from '../api/authService';
-
-const {width, height} = Dimensions.get('window');
-
-const LoginScreen = ({navigation}) => {
->>>>>>> 9e1069c (first commit)
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
-<<<<<<< HEAD
   const { loginUser } = useUser(); // ✅ access context login method
 
-=======
->>>>>>> 9e1069c (first commit)
   const formTranslateY = useRef(new Animated.Value(50)).current;
   const formOpacity = useRef(new Animated.Value(0)).current;
 
@@ -63,7 +48,6 @@ const LoginScreen = ({navigation}) => {
   }, []);
 
   const handleLogin = async () => {
-<<<<<<< HEAD
   if (!email || !password) {
     Toast.show({
       type: 'error',
@@ -106,35 +90,6 @@ const LoginScreen = ({navigation}) => {
   }
 };
 
-=======
-    if (!email || !password) {
-      Toast.show({
-        type: 'error',
-        text1: 'Missing Fields',
-        text2: 'Please enter your email and password.',
-      });
-      return;
-    }
-
-    const response = await login(email, password);
-
-    if (response) {
-      Toast.show({
-        type: 'success',
-        text1: 'Login Successful',
-        text2: 'Welcome back!',
-      });
-
-      navigation.navigate('Home');
-    } else {
-      Toast.show({
-        type: 'error',
-        text1: 'Login Failed',
-        text2: 'Invalid credentials. Try again.',
-      });
-    }
-  };
->>>>>>> 9e1069c (first commit)
 
   return (
     <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
@@ -143,14 +98,9 @@ const LoginScreen = ({navigation}) => {
       <Animated.View
         style={[
           styles.form,
-<<<<<<< HEAD
           { transform: [{ translateY: formTranslateY }], opacity: formOpacity },
         ]}
       >
-=======
-          {transform: [{translateY: formTranslateY}], opacity: formOpacity},
-        ]}>
->>>>>>> 9e1069c (first commit)
         <Text style={styles.title}>Sign in</Text>
         <View style={styles.underline} />
 
@@ -182,12 +132,8 @@ const LoginScreen = ({navigation}) => {
         <View style={styles.row}>
           <TouchableOpacity
             style={styles.rememberMe}
-<<<<<<< HEAD
             onPress={() => setRememberMe(!rememberMe)}
           >
-=======
-            onPress={() => setRememberMe(!rememberMe)}>
->>>>>>> 9e1069c (first commit)
             <Ionicons
               name={rememberMe ? 'checkbox' : 'square-outline'}
               size={18}
@@ -219,15 +165,9 @@ const LoginScreen = ({navigation}) => {
 export default LoginScreen;
 
 const styles = StyleSheet.create({
-<<<<<<< HEAD
   container: { flex: 1, backgroundColor: '#fff' },
   wave: { width, height: 700, resizeMode: 'cover' },
   form: { paddingHorizontal: 30, marginTop: -280 },
-=======
-  container: {flex: 1, backgroundColor: '#fff'},
-  wave: {width, height: 700, resizeMode: 'cover'},
-  form: {paddingHorizontal: 30, marginTop: -280},
->>>>>>> 9e1069c (first commit)
   title: {
     fontSize: 50,
     fontWeight: 'bold',
@@ -241,33 +181,21 @@ const styles = StyleSheet.create({
     marginBottom: 60,
     borderRadius: 2,
   },
-<<<<<<< HEAD
   iconRight: { marginLeft: 10 },
-=======
-  iconRight: {marginLeft: 10},
->>>>>>> 9e1069c (first commit)
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 30,
   },
-<<<<<<< HEAD
   rememberMe: { flexDirection: 'row', alignItems: 'center' },
-=======
-  rememberMe: {flexDirection: 'row', alignItems: 'center'},
->>>>>>> 9e1069c (first commit)
   rememberText: {
     marginLeft: 6,
     fontSize: 14,
     color: '#333',
     fontFamily: 'Segoe UI',
   },
-<<<<<<< HEAD
   forgot: { fontSize: 14, color: '#6a380f', fontWeight: '600' },
-=======
-  forgot: {fontSize: 14, color: '#6a380f', fontWeight: '600'},
->>>>>>> 9e1069c (first commit)
   loginBtn: {
     backgroundColor: '#6a380f',
     paddingVertical: 14,
@@ -281,11 +209,7 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     fontFamily: 'Segoe UI',
   },
-<<<<<<< HEAD
   signupWrapper: { flexDirection: 'row', justifyContent: 'center' },
-=======
-  signupWrapper: {flexDirection: 'row', justifyContent: 'center'},
->>>>>>> 9e1069c (first commit)
   signupText: {
     color: '#777',
     fontSize: 14,
