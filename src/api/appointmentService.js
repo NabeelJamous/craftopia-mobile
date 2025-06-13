@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE = 'http://192.168.1.32:3000/appointments';
+const API_BASE = 'http://192.168.1.18:3000/appointments';
 
 export const createAppointment = async ({userEmail, crafterEmail, date}) => {
   const response = await axios.post(`${API_BASE}/create`, {

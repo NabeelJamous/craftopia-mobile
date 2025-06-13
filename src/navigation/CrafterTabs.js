@@ -4,11 +4,10 @@ import {View, Text, Image, StyleSheet} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useUser} from '../context/UserContext';
 
-import CrafterHomeScreen from '../screens/crafter/CrafterHomeScreen'; // ✅ NEW
+import CrafterHomeScreen from '../screens/crafter/CrafterHomeScreen';
 import CrafterTemplatesScreen from '../screens/crafter/CrafterTemplatesScreen';
 import CrafterSchedulesScreen from '../screens/crafter/CrafterSchedulesScreen';
 import ChatScreen from '../screens/ChatScreen';
-import WorkshopsScreen from '../screens/WorkshopsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 
 const Tab = createBottomTabNavigator();
@@ -76,7 +75,6 @@ const CrafterTabs = () => {
       <Tab.Screen name="Templates" component={CrafterTemplatesScreen} />
       <Tab.Screen name="Schedules" component={CrafterSchedulesScreen} />
       <Tab.Screen name="Chat" component={ChatScreen} />
-      <Tab.Screen name="Workshops" component={WorkshopsScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );

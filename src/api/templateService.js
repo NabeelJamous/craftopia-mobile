@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://192.168.1.32:3000/templates';
+const API_URL = 'http://192.168.1.18:3000/templates';
 
 export const createTemplate = async templateData => {
   const response = await axios.post(API_URL, templateData);
